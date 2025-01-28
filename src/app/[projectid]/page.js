@@ -6,6 +6,7 @@ import { supabase } from "../supabase";
 export default function Project({ params }) {
   const [apks, setapks] = useState("");
   const [durl, setdurl] = useState("");
+  const [editval, seteditval] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
@@ -66,6 +67,31 @@ export default function Project({ params }) {
     }
   };
 
+  async function setNewDurl(){
+    if(editval){
+      
+      const data2 = await supabase
+        .from("verzion")
+        .update({
+          defaulturl: editval,
+        })
+        .eq("projectid", params.projectid)
+        .select();
+
+        seteditval('')
+        toggleVisibility()
+    }
+  }
+
+  function toggleVisibility() {
+
+    const myDiv = document.getElementById("edit");
+
+    myDiv.classList.toggle("hidden"); // Add or remove the 'hidden' class
+
+}
+
+
   return (
     <div className="min-h-screen p-8">
       {/* Project Name Header */}
@@ -82,29 +108,61 @@ export default function Project({ params }) {
           Upload File
           <input type="file" onChange={handleFileUpload} className="hidden" />
         </label>
-        <p className="text-black font-mono">{isUploading ? "Uploading...." : ""}</p>
-        <a
-          href={durl}
-          className="cursor-pointer bg-yellow-100 text-gray-700 font-mono whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-yellow-200 transition duration-300 block text-start mb-4"
-        >
-          default link: {durl}
-        </a>
+        <p className="text-black font-mono">
+          {isUploading ? "Uploading...." : ""}
+        </p>
         <div className="flex">
-        <a
-          href={`/go/${params.projectid}`}
-          className="flex-1 cursor-pointer bg-green-100 text-gray-700 font-mono whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-green-200 transition duration-300 block text-start mb-4"
-        >
-          download link: {window.location.host}/go/{params.projectid}
-        </a>
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.host+'/go/'+params.projectid);
-          }}
-          className="cursor-pointer bg-green-400 text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-green-500 transition duration-300 block text-start font-mono mb-4"
-        >
-          <img src="/copy.png" />
-        </button>
-
+          <a
+            href={durl}
+            className="flex-1 cursor-pointer bg-yellow-100 text-gray-700 font-mono whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-yellow-200 transition duration-300 block text-start mb-4"
+          >
+            default link: {durl}
+          </a>
+          <button
+            onClick={() => {
+              toggleVisibility()
+            }}
+            className="cursor-pointer bg-yellow-400 text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-yellow-500 transition duration-300 block text-start font-mono mb-4"
+          >
+            <img src="/edit.png" />
+          </button>
+        </div>
+        <div className="flex hidden" id="edit">
+          <input
+            type="text"
+            value={editval}
+            onChange={(e) => {
+              seteditval(e.target.value);
+            }}
+            placeholder="Enter new default link"
+            className="flex-1 px-4 py-2 w-64 border border-black  focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-black font-mono mb-4"
+          />
+          <button
+            onClick={() => {
+              setNewDurl()
+            }}
+            className="cursor-pointer bg-gray-200 text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-gray-200 transition duration-300 block text-start font-mono mb-4"
+          >
+            <img src="/floppy-disk.png" />
+          </button>
+        </div>
+        <div className="flex">
+          <a
+            href={`/go/${params.projectid}`}
+            className="flex-1 cursor-pointer bg-green-100 text-gray-700 font-mono whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-green-200 transition duration-300 block text-start mb-4"
+          >
+            download link: {window.location.host}/go/{params.projectid}
+          </a>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(
+                window.location.host + "/go/" + params.projectid
+              );
+            }}
+            className="cursor-pointer bg-green-400 text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis px-4 py-2  hover:bg-green-500 transition duration-300 block text-start font-mono mb-4"
+          >
+            <img src="/copy.png" />
+          </button>
         </div>
 
         <h2 className="text-xl font-semibold text-gray-500 mb-4">Files</h2>
