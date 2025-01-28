@@ -21,6 +21,7 @@
 ## Tech Stack
 
 **Client:** Next Js, React, Javascript
+
 **Server:** Supabase, Vercel(hosting)
 
 **APIs:** Supabase
