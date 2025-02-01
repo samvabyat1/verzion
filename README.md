@@ -16,7 +16,7 @@
 
 ## Deployed
 
-[verzion.versel.app](https://verzion.vercel.app)
+[verzion.vercel.app](https://verzion.vercel.app)
 
 ## Tech Stack
 
